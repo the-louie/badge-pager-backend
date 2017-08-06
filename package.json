@@ -1,0 +1,27 @@
+{
+  "name": "badge-pager-backend",
+  "version": "0.0.1",
+  "description": "A Quick & Dirty backend for the BadgePager.",
+  "engines": {
+    "node": "6.11.1"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "pg": "6.x",
+    "ejs": "2.5.6",
+    "express": "4.15.2"
+  },
+  "devDependencies": {
+    "request": "^2.81.0",
+    "tape": "^4.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/the-louie/badge-pager-backend"
+  },
+  "license": "Apache 2.0"
+}
