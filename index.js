@@ -7,7 +7,11 @@ app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function (request, response) {
-  response.write("hej");
+  response.write(`
+<pre>Send page to: <input type="text" placeholder="nick"/>
+Send message: <input type="text" placeholder="text"/>
+</pre>
+`);
   response.end();
 });
 
