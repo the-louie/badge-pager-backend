@@ -79,31 +79,54 @@ mqttClient.on('message', function (topic, message) {
   console.log(message.toString());
 });
 
-async function sendHandler(request, response) {
+function sendHandler(request, response) {
   let targetNick = request.body.target;
   let senderNick = request.body.sender;
   let message = request.body.message;
   let messageId = generateId(targetNick + message + senderNick);
 
-  let sender = await getUserFromNick(senderNick);
-  let target = await getUserFromNick(targetNick);
-
   pg.connect(process.env.DATABASE_URL, (err, client, done) => {
-    client.query(
-        'INSERT INTO badge_messages (messageid, sender, target, message) VALUES ($1,$2,$3,$4)',
-        [messageId, sender.id, target.id, message],
-        (err, result) => {
-          if(err) {
-            resonse.send("ERR");
-            return console.log("ERROR", err);
-          }
-          const mqttTarget = `sha2017pager/swe/${target.badgeid}`;
-          console.log(`Sending '${message}' to '${mqttTarget}'.`);
-          const payload = JSON.stringify({sender: sender.nick, text: message, id: messageId});
-          mqttClient.publish(mqttTarget, payload, null, console.log);
-          response.send(messageId);
+    client.query('SELECT * FROM badge_users WHERE nick = $1', [senderNick], (err, result) => {
+      done();
+      if (err) { return; }
+      else if (result.rowCount === 0) { return; }
+      else {
+        sender = result.rows[0];
+
+        pg.connect(process.env.DATABASE_URL, (err, client, done) => {
+          client.query('SELECT * FROM badge_users WHERE nick = $1', [targetNick], (err, result) => {
+            done();
+            if (err) { return; }
+            else if (result.rowCount === 0) { return; }
+            else {
+              target = result.rows[0];
+
+              pg.connect(process.env.DATABASE_URL, (err, client, done) => {
+                client.query(
+                    'INSERT INTO badge_messages (messageid, sender, target, message) VALUES ($1,$2,$3,$4)',
+                    [messageId, sender.id, target.id, message],
+                    (err, result) => {
+                      if(err) {
+                        resonse.send("ERR");
+                        return console.log("ERROR", err);
+                      }
+                      const mqttTarget = `sha2017pager/swe/${target.badgeid}`;
+                      console.log(`Sending '${message}' to '${mqttTarget}'.`);
+                      const payload = JSON.stringify({sender: sender.nick, text: message, id: messageId});
+                      mqttClient.publish(mqttTarget, payload, null, console.log);
+                      response.send(messageId);
+                    });
+              });
+            }
+          });
         });
+      }
+    });
   });
+  // let sender = await getUserFromNick(senderNick);
+  // let target = await getUserFromNick(targetNick);
+
+
 }
 
 app.post('/send', urlEncoder, sendHandler);
