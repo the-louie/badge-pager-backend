@@ -6,14 +6,16 @@ app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
 
+// views is directory for all template files
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+
 app.get('/', function (request, response) {
-  response.write(`
-<pre>Send page to: <input type="text" placeholder="nick"/>
-Send message: <input type="text" placeholder="text"/>
-<input type="submit"/>
-</pre>
-`);
-  response.end();
+  response.render("pages/index");
+});
+
+app.post('/send', (request, response) => {
+  response.send("OK");
 });
 
 app.get('/db', function (request, response) {

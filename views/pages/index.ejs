@@ -5,7 +5,14 @@
   <script>
     $(document).ready( () => {
       $("#sendmessage").submit(function( event ) {
-        console.log( "Handler for .submit() called.", this.nick );
+        console.log( "Handler for .submit() called.", this.nick.value );
+        $.ajax({
+          type: "POST",
+          url: url,
+          data: $("#sendmessage").serialize(), // serializes the form's elements.
+          success: function(data) { console.log(data); }
+        });
+
         event.preventDefault();
       });
     })
@@ -13,9 +20,9 @@
 </head>
 <body>
 Send message:
-<form id="sendmessage" action="/send">
-  <input type="text" name="nick" placeholder="nick"/>
-  <input type="text" name="message" placeholder="message"/>
+<form id="sendmessage">
+  <input type="text" name="nick" placeholder="nick"/><br/>
+  <input type="text" name="message" placeholder="message"/><br/>
   <input type="submit" value="send"/>
 </form>
 
