@@ -168,6 +168,61 @@ app.get('/db', function (request, response) {
   });
 });
 
+app.get('/register', (request, response) => {
+  response.render("pages/register");
+});
+
+app.get('/listusers', (request, response) => {
+  pg.connect(process.env.DATABASE_URL, function (err, client, done) {
+    client.query("SELECT nick FROM badge_users where badgeid != ''", function (err, result) {
+      done();
+      if (err) {
+        console.error(err);
+        response.send("Error " + err);
+      } else {
+        response.send(JSON.stringify(result.rows, null, 2));
+      }
+    });
+  });
+});
+
+app.post('/register', urlEncoder, (request, response) => {
+  console.log("new register", JSON.stringify(request.body));
+  if (!request.body.nick || !request.body.badgeid) {
+    response.write("FAIL");
+    return;
+  }
+
+  // verify mac
+  mac = badgeid.split(':');
+  if (mac.length !== 6) {
+    response.write("FAIL");
+    return;
+  }
+  for (let submac of mac) {
+    res=submac.match(/[0-9a-f]{2}/);
+    if (res === null) {
+      response.write("FAIL");
+      return;
+    }
+  }
+
+  const passhash = "";
+  const ip = request.connection.remoteAddress;
+
+  pg.connect(process.env.DATABASE_URL, function (err, client, done) {
+    client.query('INSERT INTO badge_users (nick, password, badgeid, ip) VALUES ($1,$2,$3, $4)', [request.body.nick, passhash, request.body.badgeid, ip], function (err, result) {
+      done();
+      if (err) {
+        console.error(err);
+        response.send("Error " + err);
+      } else {
+        response.send("OK");
+      }
+    });
+  });
+});
+
 app.listen(app.get('port'), function () {
   console.log('Node app is running on port', app.get('port'));
 });
