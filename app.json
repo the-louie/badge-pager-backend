@@ -4,6 +4,6 @@
   "repository": "https://github.com/the-louie/badge-pager-backend",
   "image": "heroku/nodejs",
   "engines": {
-    "node": "8.2.1"
+    "node": ">=8.2.1"
   }
 }
