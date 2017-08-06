@@ -2,5 +2,8 @@
   "name": "BadgePager SHA2017",
   "description": "A Quick & Dirty backend for the BadgePager.",
   "repository": "https://github.com/the-louie/badge-pager-backend",
-  "image": "heroku/nodejs"
+  "image": "heroku/nodejs",
+  "engines": {
+    "node": "8.2.1"
+  }
 }
