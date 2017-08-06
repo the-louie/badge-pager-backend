@@ -123,10 +123,6 @@ function sendHandler(request, response) {
       }
     });
   });
-  // let sender = await getUserFromNick(senderNick);
-  // let target = await getUserFromNick(targetNick);
-
-
 }
 
 app.post('/send', urlEncoder, sendHandler);
