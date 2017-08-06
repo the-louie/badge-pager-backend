@@ -10,6 +10,7 @@ app.get('/', function (request, response) {
   response.write(`
 <pre>Send page to: <input type="text" placeholder="nick"/>
 Send message: <input type="text" placeholder="text"/>
+<input type="submit"/>
 </pre>
 `);
   response.end();

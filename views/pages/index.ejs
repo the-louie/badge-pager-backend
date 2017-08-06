@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+  <script>
+    $(document).ready( () => {
+      $("#sendmessage").submit(function( event ) {
+        console.log( "Handler for .submit() called.", this.nick );
+        event.preventDefault();
+      });
+    })
+  </script>
+</head>
+<body>
+Send message:
+<form id="sendmessage" action="/send">
+  <input type="text" name="nick" placeholder="nick"/>
+  <input type="text" name="message" placeholder="message"/>
+  <input type="submit" value="send"/>
+</form>
+
+</body>
+</html>
