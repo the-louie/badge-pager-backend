@@ -3,12 +3,27 @@
 <head>
   <% include ../partials/header.ejs %>
   <script>
-
+    let interval = 0;
+    function getResponse() {
+      console.log("checking");
+      $.post("/response/<%= messageId %>", function( data ) {
+        console.log("reply:", data);
+        if (data !== "") {
+          $( "#response" ).html( data.response );
+          $( "#message" ).html( data.message );
+          clearInterval(interval);
+          interval = 0;
+        }
+      });
+    }
+    $(document).ready(() => {
+      interval = setInterval(getResponse, 2500);
+    })
 
   </script>
 </head>
 <body>
-    Waiting for response to <b><%= messageId %></b>.
-    <pre><%= response %></pre>
+    Waiting for response to "<b><span id="message">...</span></b>".
+    <pre>response: <span id="response">pending</span></pre>
 </body>
 </html>
