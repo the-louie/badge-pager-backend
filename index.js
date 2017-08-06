@@ -188,7 +188,7 @@ app.get('/listusers', (request, response) => {
 
 app.post('/register', urlEncoder, (request, response) => {
   console.log("new register", JSON.stringify(request.body));
-  if (!request.body.nick || !request.body.badgeid) {
+  if (!request.body.nick || !request.body.badgeid) {
     response.write("FAIL");
     return;
   }
